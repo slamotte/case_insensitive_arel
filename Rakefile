@@ -15,14 +15,16 @@ Jeweler::Tasks.new do |gem|
   gem.name = "case_insensitive_arel"
   gem.homepage = "http://github.com/slamotte/case_insensitive_arel"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "slamotte@winnipeg.ca"
+  gem.summary = %Q{Allows Arel queries to be case-insensitive}
+  gem.description = <<EOF
+If you're using Oracle or another DBMS that has case-insensitive collation sequences, this gem is for you.
+EOF
+  gem.email = "steve@lexor.ca"
   gem.authors = ["Steve Lamotte"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
-  #  gem.add_runtime_dependency 'jabber4r', '> 0.1'
-  #  gem.add_development_dependency 'rspec', '> 1.2.3'
+  gem.add_runtime_dependency 'arel', '>= 2.0.9'
+  gem.add_runtime_dependency 'activesupport'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
