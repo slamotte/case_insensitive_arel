@@ -1,6 +1,6 @@
 require 'helper'
 
-class TestBasicComparisons < Test::Unit::TestCase
+class TestComparisons < Test::Unit::TestCase
   should "work correctly in case-insensitive mode" do
     Arel::CaseInsensitive.case_insensitive = true
     should_be_like @users.where(@users[:name].eq('Steve')).to_sql, "SELECT FROM \"users\" WHERE UPPER(\"users\".\"name\") = 'STEVE'"
