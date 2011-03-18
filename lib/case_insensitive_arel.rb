@@ -21,7 +21,7 @@ module Arel
     cattr_accessor :case_insensitive, :convert_attribute, :convert_string
 
     def self.convert_value(val, method)
-      self.case_insensitive ? self.send(method).call(val) : val
+      self.case_insensitive ? send(method).call(val) : val
     end
   end
 end
