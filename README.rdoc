@@ -1,8 +1,86 @@
 = case_insensitive_arel
 
-Description goes here.
+If you're using Oracle or another DBMS that uses case-sensitive collation sequences, and don't want to litter your
+code with snippets of proprietary case-conversion SQL, this may be the solution you're looking for.
 
-== Contributing to case_insensitive_arel
+== How It Works
+
+This gem is pretty simple in its operation. Working at the Arel level, it takes +String+, +Arel_Attributes_Attribute+,
+and +Arel_Attributes_String+ values, and executes a proc that is responsible for converting them into
+a common format for comparison e.g. uppercase or lowercase. This proc can be overridden to do whatever you want. For
+example, you might prefer to convert the values to lowercase, or use another conversion method. No problem! You can
+also enable and disable the case-insensitive comparison behaviour by setting a flag, see below for details.
+
+It's important to note that any custom SQL you create will _not_ be modified by this gem. Everything that is generated
+by Arel however should be handled as you'd expect. If you find something that doesn't work the way you think it should,
+please let me know.
+
+== Examples
+
+Here are some examples of what +case_insensitive_arel+ will do:
+
+  users.where(users[:name].eq('Steve')).to_sql
+
+  => SELECT  FROM "USERS" WHERE UPPER("USERS"."NAME") = UPPER('Steve')
+
+  users.where(users[:name].matches('Steve%')).to_sql
+
+  => SELECT  FROM "USERS" WHERE UPPER("USERS"."NAME") LIKE UPPER('Steve%')
+
+  users.where(users[:name].in(%w(Steve Barb))).to_sql
+
+  => SELECT  FROM "USERS" WHERE UPPER("USERS"."NAME") IN (UPPER('Steve'), UPPER('Barb')')
+
+  users.group(users[:name]).to_sql
+
+  => SELECT  FROM "USERS" GROUP BY UPPER("USERS"."NAME")
+
+  users.join(photos).on(users[:name].eq(photos[:name])).to_sql
+
+  => SELECT  FROM "USERS" INNER JOIN "PHOTOS" ON UPPER("USERS"."NAME") = UPPER("PHOTOS"."USER_NAME")
+
+  users.project(users[:name]).where(users[:name].eq('Steve'))
+
+  => SELECT "USERS"."NAME" FROM "USERS" WHERE UPPER("USERS"."NAME") = UPPER('Steve')
+
+== Customization
+
+The following default settings can be overridden in your code as required:
+
+  Arel::CaseInsensitive.case_insensitive = false
+  Arel::CaseInsensitive.conversion_proc = Proc.new { |val| "UPPER(#{val})" }
+
+These settings, which were used for the above examples, work for Oracle. You can customize the +convert_attribute+
+setting to specify an alternative conversion function for your DBMS in your application. The +convert_string+ setting is
+used to convert a string literal into a form that can be compared in a case-insensitive fasion to the result of what's
+returned by +convert_attribute+ as the query is processed by the DBMS. Finally, the +case_insensitive+ setting can be
+used to disable case-insensitive behaviour if need be.
+
+As an example, you could add this code to your app if you wanted to use lowercase for conversions:
+
+  Arel::CaseInsensitive.conversion_proc = Proc.new { |val| "LOWER(#{val})" }
+
+== Known Issues
+
+=== Performance/Query Optimization
+
+Due to the wrapping of column names with function calls, certain DBMS' optimizers may ignore indexes on those columns
+that might otherwise be used for a query. If supported by your DBMS, you may be able to create a special index on
+these columns to help out wih your query. As an example, Oracle supports _function-based indexes_.
+
+For more information, please refer to your DBMS's documentation.
+
+=== Single Connection Only
+
+Because this implementation applies across all adapters, there may be issues with applications that use multiple
+database adapters.
+
+=== Custom SQL
+
+Rather than risk madness, I didn't even bother trying to make this work with custom SQL. Stick with Arel and there
+won't be any issues.
+
+== Contributing
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it

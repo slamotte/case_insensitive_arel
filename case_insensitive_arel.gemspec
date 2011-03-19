@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "case_insensitive_arel.gemspec",
     "lib/case_insensitive_arel.rb",
     "test/helper.rb",
     "test/support/fake_record.rb",

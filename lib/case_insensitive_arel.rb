@@ -1,51 +1,57 @@
 require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/module/aliasing'
 
-module Arel
-  module Visitors
+module Arel #:nodoc:
+  module Visitors #:nodoc: all
     class ToSql
-      # List of Arel types that should be converted to upper or lower case
+      # List of Arel types that should be converted to make them comparable in a case-insensitive fashion
       %w(Arel_Attributes_Attribute Arel_Attributes_String String).each do |arel_type_name|
-        convert_method = case arel_type_name
-                           when /^Arel_Attributes_.+/
-                             :convert_attribute
-                           when 'String'
-                             :convert_string
-                           else
-                             raise "Unexpected Arel type name: #{arel_type_name}"
-                         end
         define_method "visit_#{arel_type_name}_with_case_insensitive" do |o|
           value = send("visit_#{arel_type_name}_without_case_insensitive", o)
-          o.respond_to?(:do_not_make_case_insensitive?) ? value : Arel::CaseInsensitive.convert_value(value, convert_method)
+
+          # If the object has been tagged with
+          o.respond_to?(:do_not_make_case_insensitive?) ? value : Arel::CaseInsensitive.convert_value(value)
         end
         alias_method_chain "visit_#{arel_type_name}", :case_insensitive
       end
     end
   end
 
+  # Controls case-insensitive comparisons. The following attributes can be set to customize behaviour.
   class CaseInsensitive
-    cattr_accessor :case_insensitive, :convert_attribute, :convert_string
+    # Boolean that determines whether case-insensitive processing is enabled or not. Defaults to:
+    #  Arel::CaseInsensitive.case_insensitive = true
+    cattr_accessor :case_insensitive
 
-    def self.convert_value(val, method)
-      case_insensitive ? send(method).call(val) : val
+    # Proc that accepts an Arel object and converts it into something that can be compared in a case-insensitive manner. Defaults to:
+    #  Arel::CaseInsensitive.conversion_proc = Proc.new { |val| "UPPER(#{val})" }
+    cattr_accessor :conversion_proc
+
+    private
+
+    # Return the converted value or the value itself depending on the current state of +case_insensitive+
+    def self.convert_value(val)
+      case_insensitive ? conversion_proc.call(val) : val
     end
   end
 
-  class Table
+  class Table # :nodoc:
+    # We don't want an attribute in the SELECT to be processed by the conversion proc. As such, tag +project+'s' parameters with a special
+    # singleton method to prevent them from being converted.
     def project_with_case_insensitive(*things)
-      things = things.map do |thing|
-        new_thing = thing.clone # Need to clone these because we might want to use an attribute in the SELECT and WHERE clauses, but the former shouldn't be altered
-        def new_thing.do_not_make_case_insensitive?; true; end
+    # If a +thing+ is used elsewhere (e.g. in the WHERE clause), tagging it will cause the WHERE clause to be affected as well. So create a new
+    # list of things and tag them instead.
+    new_things = things.map do |thing|
+        new_thing = thing.clone
+        def new_thing.do_not_make_case_insensitive?; end
         new_thing
       end
-      project_without_case_insensitive *things
+      project_without_case_insensitive *new_things
     end
     alias_method_chain :project, :case_insensitive
   end
 end
 
-# Set the default values (for Oracle)
+# Set the default values (these work for Oracle)
 Arel::CaseInsensitive.case_insensitive = true
-Arel::CaseInsensitive.convert_attribute = Proc.new { |val| "UPPER(#{val})" }
-Arel::CaseInsensitive.convert_string = Proc.new{ |val| val.upcase }
-
+Arel::CaseInsensitive.conversion_proc = Proc.new { |val| "UPPER(#{val})" }
