@@ -5,13 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{case_insensitive_arel}
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Steve Lamotte"]
-  s.date = %q{2011-03-18}
-  s.description = %q{If you're using Oracle or another DBMS that has case-insensitive collation sequences, this gem is for you.
-}
+  s.date = %q{2011-03-19}
+  s.description = %q{If you're using Oracle or another DBMS that has case-insensitive collation sequences, and you don't want to litter your database access code with case conversions, this gem is for you.}
   s.email = %q{steve@lexor.ca}
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -38,7 +37,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Allows Arel queries to be case-insensitive}
+  s.summary = %q{Forces Arel queries to be case-insensitive}
   s.test_files = [
     "test/helper.rb",
     "test/support/fake_record.rb",
@@ -60,7 +59,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_runtime_dependency(%q<arel>, [">= 2.0.9"])
-      s.add_runtime_dependency(%q<activesupport>, [">= 0"])
+      s.add_runtime_dependency(%q<activesupport>, [">= 2.0.0"])
     else
       s.add_dependency(%q<arel>, [">= 2.0.9"])
       s.add_dependency(%q<activesupport>, [">= 3.0.0"])
@@ -69,7 +68,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<arel>, [">= 2.0.9"])
-      s.add_dependency(%q<activesupport>, [">= 0"])
+      s.add_dependency(%q<activesupport>, [">= 2.0.0"])
     end
   else
     s.add_dependency(%q<arel>, [">= 2.0.9"])
@@ -79,7 +78,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<arel>, [">= 2.0.9"])
-    s.add_dependency(%q<activesupport>, [">= 0"])
+    s.add_dependency(%q<activesupport>, [">= 2.0.0"])
   end
 end
 
