@@ -32,7 +32,7 @@ module Arel #:nodoc:
     # Determines whether an object should be converted to case-insensitive form or not
     def self.leave_case_sensitive?(obj)
        obj.respond_to?(:do_not_make_case_insensitive?) ||
-       false#(obj.respond_to?(:name) && obj.name.eql?('*'))
+       (obj.respond_to?(:name) && obj.name.eql?('*'))
     end
 
     private
