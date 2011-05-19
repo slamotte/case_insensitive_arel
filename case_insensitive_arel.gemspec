@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{case_insensitive_arel}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Steve Lamotte"]
-  s.date = %q{2011-03-19}
+  s.date = %q{2011-05-18}
   s.description = %q{If you're using Oracle or another DBMS that has case-insensitive collation sequences, and you don't want to litter your database access code with case conversions, this gem is for you.}
   s.email = %q{steve@lexor.ca}
   s.extra_rdoc_files = [
