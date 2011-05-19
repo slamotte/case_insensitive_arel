@@ -6,11 +6,11 @@ module Arel #:nodoc:
     class ToSql
       # List of Arel types that should be converted to make them comparable in a case-insensitive fashion
       %w(Arel_Attributes_Attribute Arel_Attributes_String String).each do |arel_type_name|
-        define_method "visit_#{arel_type_name}_with_case_insensitive" do |o|
-          value = send("visit_#{arel_type_name}_without_case_insensitive", o)
+        define_method "visit_#{arel_type_name}_with_case_insensitive" do |obj|
+          value = send("visit_#{arel_type_name}_without_case_insensitive", obj)
 
-          # If the object has been tagged with
-          o.respond_to?(:do_not_make_case_insensitive?) ? value : Arel::CaseInsensitive.convert_value(value)
+          # Return either the original case-sensitive value or a converted version
+          Arel::CaseInsensitive.leave_case_sensitive?(obj) ? value : Arel::CaseInsensitive.convert_value(value)
         end
         alias_method_chain "visit_#{arel_type_name}", :case_insensitive
       end
@@ -26,6 +26,14 @@ module Arel #:nodoc:
     # Proc that accepts an Arel object and converts it into something that can be compared in a case-insensitive manner. Defaults to:
     #  Arel::CaseInsensitive.conversion_proc = Proc.new { |val| "UPPER(#{val})" }
     cattr_accessor :conversion_proc
+
+    protected
+
+    # Determines whether an object should be converted to case-insensitive form or not
+    def self.leave_case_sensitive?(obj)
+       obj.respond_to?(:do_not_make_case_insensitive?) ||
+       false#(obj.respond_to?(:name) && obj.name.eql?('*'))
+    end
 
     private
 
