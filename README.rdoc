@@ -66,7 +66,7 @@ As an example, you could add this code to your app if you wanted to use lowercas
 
 Due to the wrapping of column names with function calls, certain DBMS' optimizers may ignore indexes on those columns
 that might otherwise be used for a query. If supported by your DBMS, you may be able to create a special index on
-these columns to help out wih your query. As an example, Oracle supports _function-based indexes_.
+these columns to help out wih your query. As an example, Oracle supports function-based indexes.
 
 For more information, please refer to your DBMS's documentation.
 
@@ -79,6 +79,20 @@ database adapters.
 
 Rather than risk madness, I didn't even bother trying to make this work with custom SQL. Stick with Arel and there
 won't be any issues.
+
+=== Converting Numeric Values?
+
+If Arel encounters a string value, it will convert it using the conversion_proc even if it contains a numeric
+value being compared to a numeric column. In the typical case of looking up Rails' values that originate from the params
+hash (e.g. <tt>params[:id]</tt> ) this could result in SQL like:
+
+  select * from "table" where "table"."id" = UPPER(3)
+
+Since most DBMSes will implicitly convert the result of the function to a numeric, there should be no impact on the
+query optimizer. If you absolutely must inhibit this function call from being generated, convert the string to a numeric
+value before Arel sees it. e.g.:
+
+  Something.find(params[:id].to_i)
 
 == Contributing
  
