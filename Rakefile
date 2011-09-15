@@ -21,8 +21,8 @@ Jeweler::Tasks.new do |gem|
   gem.authors = ["Steve Lamotte"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
-  gem.add_runtime_dependency 'arel', '>= 2.0.9'
-  gem.add_runtime_dependency 'activesupport', '>= 2.0.0'
+  gem.add_runtime_dependency 'arel', '>= 2.2.1'
+  gem.add_runtime_dependency 'activesupport', '>= 3.1.0'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
