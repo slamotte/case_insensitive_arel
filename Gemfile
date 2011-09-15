@@ -1,7 +1,8 @@
 source "http://rubygems.org"
 
-gem "arel", "= 2.1.4"
-gem 'activesupport', '= 3.0.5'
+#gem "arel", "= 2.1.4"
+#gem 'activesupport', '= 3.1.0'
+gem "activerecord", "= 3.1.0"
 
 group :development do
   gem "shoulda", ">= 0"

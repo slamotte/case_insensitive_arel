@@ -23,7 +23,7 @@ class Test::Unit::TestCase
   def setup
     @users = Arel::Table.new(:users)
     @users2 = @users.alias('u2')
-    @photos = Arel::Table.new(:photos)
+    @products = Arel::Table.new(:products)
   end
 
   def should_be_like(a, b)
