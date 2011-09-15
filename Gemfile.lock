@@ -2,23 +2,36 @@ GEM
   remote: http://rubygems.org/
   specs:
     activesupport (3.0.5)
-    arel (2.0.9)
+    arel (2.1.4)
+    coderay (0.9.8)
     git (1.2.5)
     jeweler (1.5.2)
       bundler (~> 1.0.0)
       git (>= 1.2.5)
       rake
+    method_source (0.6.5)
+      ruby_parser (>= 2.0.5)
+    pry (0.9.5)
+      coderay (>= 0.9.8)
+      method_source (>= 0.6.5)
+      ruby_parser (>= 2.0.5)
+      slop (~> 2.1.0)
     rake (0.8.7)
     rcov (0.9.9)
+    ruby_parser (2.3.0)
+      sexp_processor (~> 3.0)
+    sexp_processor (3.0.6)
     shoulda (2.11.3)
+    slop (2.1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (>= 3.0.0)
-  arel (>= 2.0.9)
+  activesupport (= 3.0.5)
+  arel (= 2.1.4)
   bundler (~> 1.0.0)
   jeweler (~> 1.5.2)
+  pry
   rcov
   shoulda

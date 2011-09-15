@@ -12,6 +12,8 @@ class TestComparisons < Test::Unit::TestCase
     should_be_like @users.where(@users[:name].in(%w(Steve Barb))).to_sql, "SELECT FROM \"users\" WHERE UPPER(\"users\".\"name\") IN (UPPER('Steve'), UPPER('Barb'))"
     should_be_like @users.where(@users[:name].not_in(%w(Steve Barb))).to_sql, "SELECT FROM \"users\" WHERE UPPER(\"users\".\"name\") NOT IN (UPPER('Steve'), UPPER('Barb'))"
     should_be_like @users.where(@users[:name].matches_any(%w(Steve Barb))).to_sql, "SELECT FROM \"users\" WHERE (UPPER(\"users\".\"name\") LIKE UPPER('Steve') OR UPPER(\"users\".\"name\") LIKE UPPER('Barb'))"
+    should_be_like @users.where(@users[:id].eq(1)).to_sql, "SELECT FROM \"users\" WHERE \"users\".\"id\" = 1"
+    should_be_like @users.where(@users[:bool].eq(true)).to_sql, "SELECT FROM \"users\" WHERE \"users\".\"bool\" = 't'"
   end
 
   should "work correctly in case-sensitive mode" do
@@ -25,5 +27,8 @@ class TestComparisons < Test::Unit::TestCase
     should_be_like @users.where(@users[:name].in(%w(Steve Barb))).to_sql, "SELECT FROM \"users\" WHERE \"users\".\"name\" IN ('Steve', 'Barb')"
     should_be_like @users.where(@users[:name].not_in(%w(Steve Barb))).to_sql, "SELECT FROM \"users\" WHERE \"users\".\"name\" NOT IN ('Steve', 'Barb')"
     should_be_like @users.where(@users[:name].matches_any(%w(Steve Barb))).to_sql, "SELECT FROM \"users\" WHERE (\"users\".\"name\" LIKE 'Steve' OR \"users\".\"name\" LIKE 'Barb')"
+    should_be_like @users.where(@users[:id].eq(1)).to_sql, "SELECT FROM \"users\" WHERE \"users\".\"id\" = 1"
+    should_be_like @users.where(@users[:id].eq(1)).to_sql, "SELECT FROM \"users\" WHERE \"users\".\"id\" = 1"
+    should_be_like @users.where(@users[:bool].eq(true)).to_sql, "SELECT FROM \"users\" WHERE \"users\".\"bool\" = 't'"
   end
 end

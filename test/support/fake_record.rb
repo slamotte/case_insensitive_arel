@@ -9,7 +9,7 @@ module FakeRecord
       @tables = %w{ users photos developers products}
       @columns = {
         'users' => [
-          Column.new('id', :integer),
+          Column.new('id', :number),
           Column.new('name', :string),
           Column.new('bool', :boolean),
           Column.new('created_at', :date)
@@ -21,7 +21,7 @@ module FakeRecord
         ],
         'products' => [
           Column.new('id', :integer),
-          Column.new('price', :decimal)
+          Column.new('price', :float)
         ]
       }
       @columns_hash = {

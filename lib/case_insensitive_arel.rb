@@ -1,5 +1,6 @@
 require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/module/aliasing'
+require 'pry'
 
 module Arel #:nodoc:
   module Visitors #:nodoc: all
@@ -7,6 +8,7 @@ module Arel #:nodoc:
       # List of Arel types that should be converted to make them comparable in a case-insensitive fashion
       %w(Arel_Attributes_Attribute Arel_Attributes_String String).each do |arel_type_name|
         define_method "visit_#{arel_type_name}_with_case_insensitive" do |obj|
+          # Get original value
           value = send("visit_#{arel_type_name}_without_case_insensitive", obj)
 
           # Return either the original case-sensitive value or a converted version
@@ -31,7 +33,12 @@ module Arel #:nodoc:
 
     # Determines whether an object should be converted to case-insensitive form or not
     def self.leave_case_sensitive?(obj)
-       obj.respond_to?(:do_not_make_case_insensitive?) ||
+      return true if
+        obj.is_a?(Arel::Attributes::Attribute) and 
+        obj.relation.is_a?(Arel::Table) and
+        obj.relation.engine.connection_pool.connection.columns_hash[obj.relation.name][obj.name.to_s].type != :string
+
+       obj.respond_to?(:do_not_make_case_insensitive?) or
        (obj.respond_to?(:name) && obj.name.eql?('*'))
     end
 
