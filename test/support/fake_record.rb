@@ -31,6 +31,10 @@ module FakeRecord
       @visitor = visitor
     end
 
+    def columns(table_name)
+      @columns[table_name]
+    end
+
     def primary_key name
       @primary_keys[name.to_s]
     end

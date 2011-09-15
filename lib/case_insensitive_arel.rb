@@ -1,6 +1,5 @@
 require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/module/aliasing'
-require 'pry'
 
 module Arel #:nodoc:
   module Visitors #:nodoc: all
@@ -34,15 +33,22 @@ module Arel #:nodoc:
     # Determines whether an object should be converted to case-insensitive form or not
     def self.leave_case_sensitive?(obj)
       if
-        obj.is_a?(Arel::Attributes::Attribute) and 
-        obj.relation.is_a?(Arel::Table) and
-        obj.relation.engine.connection_pool.connection.columns_hash[obj.relation.name][obj.name.to_s][:type] != :string
-        # binding.pry
-        return true
+        obj.is_a?(Arel::Attributes::Attribute) and obj.relation.is_a?(Arel::Table)
+
+        # Determine the attribute's type
+        cn = obj.relation.engine.connection_pool.connection
+        column = if cn.is_a?(Hash)
+          cn.columns[obj.relation.name][obj.name.to_s]
+        else
+          cn.columns(obj.relation.name).find{|col|col.name.eql?(obj.name.to_s)}
+        end
+        column_type = column ? column.type : nil
+        return true unless column_type == :string
       end
 
-       obj.respond_to?(:do_not_make_case_insensitive?) or
-       (obj.respond_to?(:name) && obj.name.eql?('*'))
+      # Last checks
+      obj.respond_to?(:do_not_make_case_insensitive?) or
+      (obj.respond_to?(:name) && obj.name.eql?('*'))
     end
 
     private
