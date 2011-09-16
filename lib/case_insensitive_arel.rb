@@ -32,14 +32,14 @@ module Arel #:nodoc:
 
     # Determines whether an object should be converted to case-insensitive form or not
     def self.leave_case_sensitive?(obj)
-      if
-        obj.is_a?(Arel::Attributes::Attribute) and obj.relation.is_a?(Arel::Table)
-
+      if obj.is_a?(Arel::Attributes::Attribute) and obj.relation.is_a?(Arel::Table)
         # Determine the attribute's type
         cn = obj.relation.engine.connection_pool.connection
         column = if cn.is_a?(Hash)
+          # This works for FakeRecord
           cn.columns[obj.relation.name][obj.name.to_s]
         else
+          # This works for Oracle Enhanced
           cn.columns(obj.relation.name).find{|col|col.name.eql?(obj.name.to_s)}
         end
         column_type = column ? column.type : nil
