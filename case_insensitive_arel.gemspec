@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Steve Lamotte"]
-  s.date = %q{2011-09-16}
+  s.date = %q{2011-09-20}
   s.description = %q{If you're using Oracle or another DBMS that has case-insensitive collation sequences, and you don't want to litter your database access code with case conversions, this gem is for you.}
   s.email = %q{steve@lexor.ca}
   s.extra_rdoc_files = [
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
     "lib/case_insensitive_arel.rb",
     "test/helper.rb",
     "test/support/fake_record.rb",
+    "test/test_as.rb",
     "test/test_comparisons.rb",
     "test/test_group_by.rb",
     "test/test_joins.rb",
@@ -41,6 +42,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "test/helper.rb",
     "test/support/fake_record.rb",
+    "test/test_as.rb",
     "test/test_comparisons.rb",
     "test/test_group_by.rb",
     "test/test_joins.rb",
