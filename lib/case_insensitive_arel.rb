@@ -59,20 +59,29 @@ module Arel #:nodoc:
     end
   end
 
-  class Table # :nodoc:
+  class SelectManager # :nodoc:
     # We don't want an attribute in the SELECT to be processed by the conversion proc. As such, tag +project+'s' parameters with a special
     # singleton method to prevent them from being converted.
     def project_with_case_insensitive(*things)
       # If a +thing+ is used elsewhere (e.g. in the WHERE clause), tagging it will cause the WHERE clause to be affected as well. So create a new
       # list of things and tag them instead.
       new_things = things.map do |thing|
-        new_thing = thing.clone
-        def new_thing.do_not_make_case_insensitive?; end
-        new_thing
+        case_insensitive_thing thing
       end
       project_without_case_insensitive *new_things
     end
     alias_method_chain :project, :case_insensitive
+
+    private
+
+    # Create a clone of +thing+ with our special tag method.
+    # Different objects require the method to be added to different places so it can be seen in +leave_case_sensitive?+ above.
+    def case_insensitive_thing(thing)
+      new_thing = thing.clone
+      target = new_thing.is_a?(Arel::Nodes::As) ? new_thing.left : new_thing
+      def target.do_not_make_case_insensitive?; end
+      new_thing
+    end
   end
 end
 
