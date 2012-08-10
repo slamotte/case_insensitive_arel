@@ -1,3 +1,17 @@
+= GEM END OF LIFE
+
+This gem was primarily created for use with Oracle. Since it's so trivial to include the following in your database.yml:
+
+  development:
+    # Make Oracle case-insensitive
+    nls_comp: ANSI
+    nls_sort: BINARY_CI
+
+it doesn't make a lot of sense to continue maintaining this gem especially when changes to Arel are so frequent and
+profound enough to completely break how case_insensitive_arel works.
+
+I hope this doesn't cause anyone too much inconvenience.
+
 = case_insensitive_arel
 
 If you're using Oracle or another DBMS that uses case-sensitive collation sequences, and don't want to litter your
